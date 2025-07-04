@@ -43,7 +43,6 @@ const CreateBook = () => {
     try {
       const payload = { ...formData };
 
-      // ✅ যদি unchecked থাকে, available পাঠাবে না
       if (!formData.available) {
         delete payload.available;
       }
