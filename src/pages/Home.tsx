@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import { useDeleteBookMutation, useGetAllBooksQuery } from "../redux/api/bookApi";
 import Swal from "sweetalert2";
+import type { IErrorResponse, IBook } from "../types/bookType";
 
 const Home = () => {
-  const { data, isLoading } = useGetAllBooksQuery(undefined);
+  const { data, isLoading } = useGetAllBooksQuery({});
   const [deleteBook] = useDeleteBookMutation();
 
   const books = [...(data?.data || [])]
-  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  .slice(0, 6);
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 6);
 
 
 
@@ -35,10 +36,11 @@ const Home = () => {
           timer: 2000,
           showConfirmButton: false,
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const error = err as IErrorResponse;
         Swal.fire({
           title: "Error!",
-          text: err?.data?.message || "Failed to delete the book.",
+          text: error?.data?.message || "Failed to delete the book.",
           icon: "error",
           confirmButtonText: "Okay",
         });
@@ -78,7 +80,7 @@ const Home = () => {
           <div className="text-center py-6">Loading books...</div>
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {books.map((book: any) => (
+            {books.map((book: IBook) => (
               <div key={book._id} className="card rounded-3xl border bg-base-100 shadow-md p-5">
                 <h3 className="text-lg font-semibold mb-1">{book.title}</h3>
                 <p className="text-sm text-gray-500">by {book.author}</p>

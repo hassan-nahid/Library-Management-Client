@@ -4,6 +4,15 @@ import { toast } from "react-hot-toast";
 import { useGetSingleBookQuery, useUpdateBookMutation } from "../redux/api/bookApi";
 import type { BookFormData } from "../types/bookType";
 
+interface ApiError {
+    data?: {
+        message?: string;
+        error?: {
+            errors?: Record<string, { message: string }>;
+        };
+    };
+}
+
 const genreOptions = [
     "FICTION",
     "NON_FICTION",
@@ -49,7 +58,8 @@ const EditBook = () => {
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, type } = e.target;
+        const checked = (e.target as HTMLInputElement).checked;
         const updatedValue =
             type === "checkbox"
                 ? checked
@@ -69,12 +79,13 @@ const EditBook = () => {
             await updateBook({ id, data: formData }).unwrap();
             toast.success("Book updated successfully!");
             navigate("/books");
-        } catch (err: any) {
-            const errs = err?.data?.error?.errors;
+        } catch (err: unknown) {
+            const error = err as ApiError;
+            const errs = error?.data?.error?.errors;
             const msg =
                 errs
                     ? Object.values(errs).map((e) => e.message).join(", ")
-                    : err?.data?.message || "Failed to update book!";
+                    : error?.data?.message || "Failed to update book!";
             toast.error(msg);
         }
     };

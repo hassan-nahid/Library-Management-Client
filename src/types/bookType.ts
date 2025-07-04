@@ -6,6 +6,7 @@ export interface IBook {
   isbn: string;
   copies: number;
   available: boolean;
+  createdAt: string;
 }
 
 export type IQueryParams = {
@@ -27,4 +28,19 @@ export interface BorrowFormData {
   book: string;      
   quantity: number;  
   dueDate: string;  
+}
+
+export interface IErrorResponse {
+  data?: {
+    message?: string;
+  };
+}
+
+export interface IBooksResponse {
+  data: IBook[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+  };
 }

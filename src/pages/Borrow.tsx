@@ -5,9 +5,10 @@ import {
   useGetSingleBookQuery,
 } from "../redux/api/bookApi";
 import { useBorrowBookMutation } from "../redux/api/borrowApi";
+import type { IErrorResponse } from "../types/bookType";
 
 const Borrow = () => {
-  const { bookId} = useParams<{ bookId: string }>();
+  const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
 
   const { data: bookData, isLoading } = useGetSingleBookQuery(bookId || "");
@@ -32,8 +33,9 @@ const Borrow = () => {
       }).unwrap();
       toast.success("Book borrowed successfully!");
       navigate("/borrow-summary");
-    } catch (err: any) {
-      const msg = err?.data?.message || "Failed to borrow book!";
+    } catch (err: unknown) {
+      const error = err as IErrorResponse;
+      const msg = error?.data?.message || "Failed to borrow book!";
       toast.error(msg);
     }
   };

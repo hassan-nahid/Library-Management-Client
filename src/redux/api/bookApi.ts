@@ -1,9 +1,9 @@
-import type { IQueryParams } from "../../types/bookType";
+import type { IBooksResponse, IQueryParams } from "../../types/bookType";
 import { api } from "./apiSlice";
 
 const bookApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getAllBooks: builder.query<any, IQueryParams>({
+        getAllBooks: builder.query<IBooksResponse, IQueryParams>({
             query: ({ page = 1, limit = 10 } = {}) => `/books?page=${page}&limit=${limit}`,
             providesTags: ["Book"],
         }),

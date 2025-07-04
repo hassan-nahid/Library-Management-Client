@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeleteBookMutation, useGetAllBooksQuery } from "../redux/api/bookApi";
-import type { IBook } from "../types/bookType";
+import type { IBook, IErrorResponse } from "../types/bookType";
 import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 10;
@@ -19,39 +19,42 @@ const Books = () => {
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
 
-const handleDelete = async (id: string) => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "This action cannot be undone!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
-  });
+  const handleDelete = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
 
-  if (result.isConfirmed) {
-    try {
-      await deleteBook(id).unwrap();
+    if (result.isConfirmed) {
+      try {
+        await deleteBook(id).unwrap();
 
-      Swal.fire({
-        title: "Deleted!",
-        text: "The book has been deleted successfully.",
-        icon: "success",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-    } catch (err: any) {
-      Swal.fire({
-        title: "Error!",
-        text: err?.data?.message || "Failed to delete the book.",
-        icon: "error",
-        confirmButtonText: "Okay",
-      });
+        Swal.fire({
+          title: "Deleted!",
+          text: "The book has been deleted successfully.",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch (err: unknown) {
+        const error = err as IErrorResponse;
+        const message = error?.data?.message || "Failed to delete the book.";
+
+        Swal.fire({
+          title: "Error!",
+          text: message,
+          icon: "error",
+          confirmButtonText: "Okay",
+        });
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="px-4 md:px-10 py-6 min-h-screen">

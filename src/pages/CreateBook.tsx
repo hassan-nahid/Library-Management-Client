@@ -31,7 +31,8 @@ const CreateBook = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     const val = type === "checkbox" ? checked : value;
     setFormData({ ...formData, [name]: val });
   };
@@ -50,11 +51,12 @@ const CreateBook = () => {
       await createBook(payload).unwrap();
       toast.success("Book added successfully!");
       navigate("/books");
-    } catch (err: any) {
-      const errs = err?.data?.error?.errors;
+    } catch (err: unknown) {
+      const errorData = err as { data?: { error?: { errors?: Record<string, { message: string }> }; message?: string } };
+      const errs = errorData?.data?.error?.errors;
       const msg = errs
-        ? Object.values(errs).map((e) => e.message).join(", ")
-        : err?.data?.message || "Failed to add book!";
+        ? Object.values(errs).map((e: { message: string }) => e.message).join(", ")
+        : errorData?.data?.message || "Failed to add book!";
       toast.error(msg);
     }
   };
