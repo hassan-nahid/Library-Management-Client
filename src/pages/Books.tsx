@@ -65,10 +65,10 @@ const Books = () => {
           <thead className="bg-base-200">
             <tr>
               <th>Title</th>
-              <th>Author</th>
-              <th>Genre</th>
-              <th>ISBN</th>
-              <th>Copies</th>
+              <th className="hidden md:table-cell">Author</th>
+              <th className="hidden md:table-cell">Genre</th>
+              <th className="hidden md:table-cell">ISBN</th>
+              <th className="hidden md:table-cell">Copies</th>
               <th>Status</th>
               <th className="text-center">Actions</th>
             </tr>
@@ -77,10 +77,10 @@ const Books = () => {
             {books.map((book: IBook) => (
               <tr key={book._id}>
                 <td>{book.title}</td>
-                <td>{book.author}</td>
-                <td>{book.genre}</td>
-                <td>{book.isbn}</td>
-                <td>{book.copies}</td>
+                <td className="hidden md:table-cell">{book.author}</td>
+                <td className="hidden md:table-cell">{book.genre}</td>
+                <td className="hidden md:table-cell">{book.isbn}</td>
+                <td className="hidden md:table-cell">{book.copies}</td>
                 <td>
                   <span className={`badge ${book.available ? "badge-success" : "badge-error"}`}>
                     {book.available ? "Available" : "Unavailable"}
@@ -95,6 +95,7 @@ const Books = () => {
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 

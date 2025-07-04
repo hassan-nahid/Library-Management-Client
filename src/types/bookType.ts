@@ -9,6 +9,11 @@ export interface IBook {
   createdAt: string;
 }
 
+export interface IBorrowSummaryItem {
+  book: IBook;
+  totalQuantity: number;
+}
+
 export type IQueryParams = {
   page?: number;
   limit?: number;
